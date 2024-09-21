@@ -22,25 +22,27 @@ app = FastAPI()
 
 
 #path parameter
-class Role(str, Enum):
-
-    ADMIN ="ADMIN"
-    USER ="USER"
 
 
-@app.get("/user/{role}")
+# class Role(str, Enum):
 
-async def user(role:Role):
+#     ADMIN ="ADMIN"
+#     USER ="USER"
 
-    if role is role.ADMIN:
 
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={
-            "message":"You are a admin"
-        })
-    else:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={
-            "message":"You are not a admin"
-        })
+# @app.get("/user/{role}")
+
+# async def user(role:Role):
+
+#     if role is role.ADMIN:
+
+#         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={
+#             "message":"You are a admin"
+#         })
+#     else:
+#         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={
+#             "message":"You are not a admin"
+#         })
 
 
 
@@ -53,3 +55,18 @@ async def user(role:Role):
 #     return JSONResponse(status_code = 200, content={
 #         'user':True
 #     })
+
+
+
+#query_parameter
+
+fake_items_db:list[dict[str, str]] = [{"item_name":"1"}, {"item_name":"2"},{"item_name":"3"}]
+
+@app.get("/")
+
+async def index(skip:int = 0, limit:int=10):
+
+    item = fake_items_db[skip:skip + limit]
+
+    return [item]
+

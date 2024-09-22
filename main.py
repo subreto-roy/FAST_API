@@ -59,14 +59,31 @@ app = FastAPI()
 
 
 #query_parameter
+#path=http://127.0.0.1:5000/?skip=1&limit=3
 
-fake_items_db:list[dict[str, str]] = [{"item_name":"1"}, {"item_name":"2"},{"item_name":"3"}]
+# fake_items_db:list[dict[str, str]] = [{"item_name":"1"}, {"item_name":"2"},{"item_name":"3"}]
 
-@app.get("/")
+# @app.get("/")
 
-async def index(skip:int = 0, limit:int=10):
+# async def index(skip:int = 0, limit:int=10):
 
-    item = fake_items_db[skip:skip + limit]
+#     item = fake_items_db[skip:skip + limit]
 
-    return [item]
+#     return [item]
 
+#request body
+
+
+
+# @app.get('/')
+
+# async def index():
+#     pass
+
+#path validation
+
+
+@app.get("/", tags=["hello"])
+
+async def get():
+    return {"hello":" world"}

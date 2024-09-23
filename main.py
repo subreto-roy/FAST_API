@@ -1,7 +1,10 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Path, Query, Body
 from enum import Enum
 from fastapi.responses import JSONResponse
-
+from pydantic import BaseModel, Field
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from typing import Annotated
 
 app = FastAPI()
 
@@ -83,7 +86,85 @@ app = FastAPI()
 #path validation
 
 
-@app.get("/", tags=["hello"])
 
-async def get():
-    return {"hello":" world"}
+# @app.get("/products/{product_id}", tags=["Get single product"])
+
+
+# @app.get("/", tags=["hello"])
+
+# async def get():
+#     return {"hello":" world"} 
+
+
+
+#multiple parameter and validation
+
+
+# from pydantic import BaseModel
+# from fastapi.responses import JSONResponse
+# from fastapi.encoders import jsonable_encoder
+# from typing import Annotated
+
+
+# class User(BaseModel):
+#     name: str | None = None
+#     username: str
+#     password:str
+#     age: int | None = 20
+
+
+# @app.put("/{id}", tags=["update user"])
+
+# async def update_user(id: Annotated[int, Path(title="user id", le=100, ge=0)],
+#                        query: Annotated[str | None, Query(title="search query")] = None, 
+#                        user: User | None =None):
+    
+#     result ={"user_id": id}
+
+#     if query:
+#         result.update({"query":query})
+
+#     if user:
+#         result.update({
+#             "user": jsonable_encoder(user)
+#         })
+
+#     return JSONResponse(content=result, status_code=200)
+
+
+
+# @app.get("/")
+
+# async def root_route():
+#     return {"hello": "world"}
+
+
+
+
+# pydantic Body - Fields
+
+class User(BaseModel):
+    name: str | None
+    username: str
+    bio: str | None = Field(
+        title=" user bio describtion",
+        max_length=4000
+
+    )
+    salary: float = Field(
+        ge=1000
+    )
+    age: int | None= 20
+
+@app.put("/users/{userId}", tags=["update user"])
+async def update_user(userId: int, user: Annotated[User, Body(embed=True)]):
+    results = {
+        "userId": userId,
+        "user": user
+    }
+    print(results)
+    return results
+
+@app.get("/", tags=["Health"])
+async def read_root():
+    return {"message": "Hello World"}

@@ -143,28 +143,51 @@ app = FastAPI()
 
 # pydantic Body - Fields
 
-class User(BaseModel):
-    name: str | None
-    username: str
-    bio: str | None = Field(
-        title=" user bio describtion",
-        max_length=4000
+# class User(BaseModel):
+#     name: str | None
+#     username: str
+#     bio: str | None = Field(
+#         title=" user bio describtion",
+#         max_length=4000
 
-    )
-    salary: float = Field(
-        ge=1000
-    )
-    age: int | None= 20
+#     )
+#     salary: float = Field(
+#         ge=1000
+#     )
+#     age: int | None= 20
 
-@app.put("/users/{userId}", tags=["update user"])
-async def update_user(userId: int, user: Annotated[User, Body(embed=True)]):
-    results = {
-        "userId": userId,
-        "user": user
-    }
-    print(results)
-    return results
+# @app.put("/users/{userId}", tags=["update user"])
+# async def update_user(userId: int, user: Annotated[User, Body(embed=True)]):
+#     results = {
+#         "userId": userId,
+#         "user": user
+#     }
+#     print(results)
+#     return results
+
+# @app.get("/", tags=["Health"])
+# async def read_root():
+#     return {"message": "Hello World"}
+
+
+# Nested Model
+
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from model.user import UserModel
+
+app = FastAPI()
+
+
+@app.put("/", tags=["update profile"])
+async def update_user(request_body: UserModel):
+    encoded = jsonable_encoder(request_body)
+    print(encoded)
+    return JSONResponse(content=encoded, status_code=200)
+
 
 @app.get("/", tags=["Health"])
-async def read_root():
-    return {"message": "Hello World"}
+async def root_route():
+    return {"Hello": "Hello World"}
+

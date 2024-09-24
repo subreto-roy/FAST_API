@@ -1,12 +1,12 @@
-from fastapi import FastAPI, status, Path, Query, Body
-from enum import Enum
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
-from typing import Annotated
+# from fastapi import FastAPI, status, Path, Query, Body
+# from enum import Enum
+# from fastapi.responses import JSONResponse
+# from pydantic import BaseModel, Field
+# from fastapi.responses import JSONResponse
+# from fastapi.encoders import jsonable_encoder
+# from typing import Annotated
 
-app = FastAPI()
+# app = FastAPI()
 
 # @app.get("/")
 # async def read_root():
@@ -172,22 +172,43 @@ app = FastAPI()
 
 # Nested Model
 
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
-from model.user import UserModel
+# from fastapi import FastAPI
+# from fastapi.responses import JSONResponse
+# from fastapi.encoders import jsonable_encoder
+# from model.user import UserModel
+
+# app = FastAPI()
+
+
+# @app.put("/", tags=["update profile"])
+# async def update_user(request_body: UserModel):
+#     encoded = jsonable_encoder(request_body)
+#     print(encoded)
+#     return JSONResponse(content=encoded, status_code=200)
+
+
+# @app.get("/", tags=["Health"])
+# async def root_route():
+    # return {"Hello": "Hello World"}
+
+from fastapi import FastAPI, Cookie, Response
+from typing import Annotated
+
 
 app = FastAPI()
 
-
-@app.put("/", tags=["update profile"])
-async def update_user(request_body: UserModel):
-    encoded = jsonable_encoder(request_body)
-    print(encoded)
-    return JSONResponse(content=encoded, status_code=200)
+@app.get("/")
+async def room_routes():
+    return {"message": "hello world"}
 
 
-@app.get("/", tags=["Health"])
-async def root_route():
-    return {"Hello": "Hello World"}
+@app.get("/token", tags=["token"])
+async def write_token():
+    response = Response(content="cookie is set successfully")
+    response.set_cookie(key="token", value="fake-cookie-token", httponly=True, max_age=5,  path="/", secure=False, samesite="strict")
+    return response
 
+@app.get("/items", tags=["items"])
+async def read_items(token: Annotated[str | None, Cookie()] = None):
+    print(token)
+    return {"message": "hello items"}
